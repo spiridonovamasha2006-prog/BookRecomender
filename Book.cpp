@@ -9,3 +9,7 @@ Book::Book(int id, const std::string& title, const std::string& author,
 
 const std::string& Book::getAuthor() const { return author_; }
 const std::string& Book::getIsbn() const { return isbn_; }
+
+std::unique_ptr<Product> Book::clone() const {
+    return std::make_unique<Book>(*this);
+}

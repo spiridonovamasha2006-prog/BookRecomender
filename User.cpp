@@ -27,7 +27,7 @@ void User::addToCart(const std::shared_ptr<Product>& product) {
     if (!cart_) {
         throw std::logic_error("Cart is null");
     }
-    cart_->addItem(product, 1);
+    cart_->addItem(product);
 }
 
 std::shared_ptr<Cart> User::getCart() const {
@@ -41,5 +41,4 @@ void User::rateProduct(const std::shared_ptr<Product>& product, int rating) {
     if (rating < 1 || rating > 5) {
         throw std::invalid_argument("rating must be 1–5");
     }
-    // Заглушка: в реальной системе добавляли бы в список оценок
 }

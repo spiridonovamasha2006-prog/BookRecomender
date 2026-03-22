@@ -3,6 +3,11 @@
 #include "Product.h"
 #include <stdexcept>
 
+int& Purchase::getNextIdRef() {
+    static int nextId = 1;
+    return nextId;
+}
+
 Purchase::Purchase(std::shared_ptr<User> user, std::time_t purchaseDate)
     : id_(getNextIdRef()++), user_(std::move(user)), purchaseDate_(purchaseDate), totalAmount_(0.0) {
     if (!user_) {
@@ -15,6 +20,7 @@ std::shared_ptr<User> Purchase::getUser() const { return user_; }
 const std::vector<std::pair<std::shared_ptr<Product>, int>>& Purchase::getProducts() const {
     return products_;
 }
+
 std::time_t Purchase::getPurchaseDate() const { return purchaseDate_; }
 double Purchase::getTotalAmount() const { return totalAmount_; }
 
