@@ -2,14 +2,18 @@
 #include <string>
 #include <vector>
 #include <memory>
+
 class Purchase;
 class Cart;
 class Product;
 
+enum class UserRole { Buyer, Admin };
+
 class User : public std::enable_shared_from_this<User> {
 public:
     User();
-    User(int id, const std::string& name, const std::string& email, int age, const std::string& passwordHash);
+    User(int id, const std::string& name, const std::string& email, int age,
+        const std::string& passwordHash, UserRole role = UserRole::Buyer);
     User(const User&) = delete;
     User& operator=(const User&) = delete;
     ~User() = default;
@@ -19,6 +23,8 @@ public:
     const std::string& getEmail() const;
     int getAge() const;
     const std::string& getPasswordHash() const;
+    UserRole getRole() const;
+
     std::vector<std::shared_ptr<Purchase>>& getPurchaseHistory();
     void addToCart(const std::shared_ptr<Product>& product);
     std::shared_ptr<Cart> getCart() const;
@@ -30,6 +36,7 @@ private:
     std::string email_;
     int age_;
     std::string passwordHash_;
+    UserRole role_;
     std::vector<std::shared_ptr<Purchase>> purchaseHistory_;
     std::unique_ptr<Cart> cart_;
 };

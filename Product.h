@@ -10,14 +10,12 @@ public:
     Product();
     Product(int id, const std::string& name, const std::string& description,
         double price, const std::string& category);
-
     Product(const Product&) = default;
     Product& operator=(const Product&) = default;
     virtual ~Product() = default;
 
     double getPrice() const override;
     std::string toDisplayString() const override;
-
     int getId() const;
     const std::string& getName() const;
     const std::string& getDescription() const;
@@ -32,11 +30,9 @@ public:
     bool containsTag(const std::string& tag) const;
 
     virtual std::unique_ptr<Product> clone() const = 0;
-
     bool operator==(const Product& other) const;
     bool operator!=(const Product& other) const;
     bool operator<(const Product& other) const;
-
     friend std::ostream& operator<<(std::ostream& os, const Product& p);
 
 protected:

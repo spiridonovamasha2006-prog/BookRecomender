@@ -8,9 +8,7 @@ int& Product::getNextIdRef() {
     return nextId;
 }
 
-Product::Product()
-    : id_(getNextIdRef()++), price_(0.0) {
-}
+Product::Product() : id_(getNextIdRef()++), price_(0.0) {}
 
 Product::Product(int id, const std::string& name, const std::string& description,
     double price, const std::string& category)
@@ -23,25 +21,10 @@ const std::string& Product::getDescription() const { return description_; }
 const std::string& Product::getCategory() const { return category_; }
 const std::vector<std::string>& Product::getTags() const { return tags_; }
 
-Product& Product::setName(const std::string& name) {
-    name_ = name;
-    return *this;
-}
-
-Product& Product::setDescription(const std::string& desc) {
-    description_ = desc;
-    return *this;
-}
-
-Product& Product::setPrice(double price) {
-    price_ = price;
-    return *this;
-}
-
-Product& Product::setCategory(const std::string& cat) {
-    category_ = cat;
-    return *this;
-}
+Product& Product::setName(const std::string& name) { name_ = name; return *this; }
+Product& Product::setDescription(const std::string& desc) { description_ = desc; return *this; }
+Product& Product::setPrice(double price) { price_ = price; return *this; }
+Product& Product::setCategory(const std::string& cat) { category_ = cat; return *this; }
 
 void Product::addTag(const std::string& tag) {
     if (tag.empty()) return;
@@ -54,9 +37,7 @@ bool Product::containsTag(const std::string& tag) const {
     return std::find(tags_.begin(), tags_.end(), tag) != tags_.end();
 }
 
-double Product::getPrice() const {
-    return price_;
-}
+double Product::getPrice() const { return price_; }
 
 std::string Product::toDisplayString() const {
     std::ostringstream oss;
@@ -65,17 +46,9 @@ std::string Product::toDisplayString() const {
     return oss.str();
 }
 
-bool Product::operator==(const Product& other) const {
-    return id_ == other.id_;
-}
-
-bool Product::operator!=(const Product& other) const {
-    return !(*this == other);
-}
-
-bool Product::operator<(const Product& other) const {
-    return price_ < other.price_;
-}
+bool Product::operator==(const Product& other) const { return id_ == other.id_; }
+bool Product::operator!=(const Product& other) const { return !(*this == other); }
+bool Product::operator<(const Product& other) const { return price_ < other.price_; }
 
 std::ostream& operator<<(std::ostream& os, const Product& p) {
     os << "[" << p.id_ << "] " << p.name_ << " — " << p.price_ << "₽";
