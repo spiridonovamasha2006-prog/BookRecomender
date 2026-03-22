@@ -3,8 +3,9 @@
 #include <vector>
 #include <memory>
 #include <ostream>
+#include "IPurchasable.h"
 
-class Product {
+class Product : public IPurchasable {
 public:
     Product();
     Product(int id, const std::string& name, const std::string& description,
@@ -14,10 +15,12 @@ public:
     Product& operator=(const Product&) = default;
     virtual ~Product() = default;
 
+    double getPrice() const override;
+    std::string toDisplayString() const override;
+
     int getId() const;
     const std::string& getName() const;
     const std::string& getDescription() const;
-    double getPrice() const;
     const std::string& getCategory() const;
     const std::vector<std::string>& getTags() const;
 
@@ -25,12 +28,10 @@ public:
     Product& setDescription(const std::string& desc);
     Product& setPrice(double price);
     Product& setCategory(const std::string& cat);
-
     void addTag(const std::string& tag);
     bool containsTag(const std::string& tag) const;
-    std::string toDisplayString() const;
 
-    double getAverageRating() const;
+    virtual std::unique_ptr<Product> clone() const = 0;
 
     bool operator==(const Product& other) const;
     bool operator!=(const Product& other) const;
@@ -38,16 +39,14 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const Product& p);
 
-private:
-    static int& getNextIdRef() {
-        static int nextId = 1;
-        return nextId;
-    }
-
+protected:
     int id_;
     std::string name_;
     std::string description_;
     double price_;
     std::string category_;
     std::vector<std::string> tags_;
+
+private:
+    static int& getNextIdRef();
 };

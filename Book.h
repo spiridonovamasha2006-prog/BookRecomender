@@ -10,6 +10,8 @@ public:
     const std::string& getAuthor() const;
     const std::string& getIsbn() const;
 
+    std::unique_ptr<Product> clone() const override;
+
 private:
     std::string author_;
     std::string isbn_;

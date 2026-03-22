@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <ctime>
-
 class User;
 class Product;
 
@@ -10,7 +9,6 @@ public:
     Rating();
     Rating(int id, std::shared_ptr<User> user, std::shared_ptr<Product> product,
         int score, std::time_t timestamp = std::time(nullptr));
-
     Rating(const Rating&) = default;
     Rating& operator=(const Rating&) = default;
     ~Rating() = default;
@@ -20,7 +18,6 @@ public:
     std::shared_ptr<Product> getProduct() const;
     int getScore() const;
     std::time_t getTimestamp() const;
-
     explicit operator int() const;
 
 private:
