@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 class User;
 class Product;
 class Purchase;

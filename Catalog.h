@@ -2,69 +2,64 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include <numeric>
+#include <functional>  // ← ДОБАВИТЬ ЭТУ СТРОКУ для std::function
 #include <type_traits>
 #include "IPurchasable.h"
 
-template <typename T>
+template<typename T>
 class Catalog {
-    static_assert(std::is_base_of_v<IPurchasable, T>,
-        "T must inherit from IPurchasable");
+    static_assert(std::is_base_of_v<IPurchasable, T>, "T must be derived from IPurchasable");
 
 public:
-    Catalog() = default;
-
-    void add(const std::shared_ptr<T>& item) {
-        if (!item) throw std::invalid_argument("item must not be null");
+    void add(std::shared_ptr<T> item) {
         items_.push_back(item);
     }
 
-    size_t size() const { return items_.size(); }
-
-    // Не шаблонный метод: сортировка по цене
-    void sortByPrice(bool ascending = true) {
+    void sortByPrice() {
         std::sort(items_.begin(), items_.end(),
-            [ascending](const auto& a, const auto& b) {
-                return ascending ? (a->getPrice() < b->getPrice())
-                    : (a->getPrice() > b->getPrice());
+            [](const std::shared_ptr<T>& a, const std::shared_ptr<T>& b) {
+                return a->getPrice() < b->getPrice();
             });
     }
 
-    // Не шаблонный метод: суммарная цена
-    double getTotalPrice() const {
-        return std::accumulate(items_.begin(), items_.end(), 0.0,
-            [](double sum, const auto& p) { return sum + p->getPrice(); });
-    }
-
-    // Шаблонный метод: поиск по предикату
-    template <typename Predicate>
-    std::vector<std::shared_ptr<T>> findIf(Predicate pred) const {
+    std::vector<std::shared_ptr<T>> findIf(std::function<bool(const std::shared_ptr<T>&)> predicate) {
         std::vector<std::shared_ptr<T>> result;
-        std::copy_if(items_.begin(), items_.end(),
-            std::back_inserter(result), pred);
+        for (const auto& item : items_) {
+            if (predicate(item)) {
+                result.push_back(item);
+            }
+        }
         return result;
     }
 
-    // Шаблонный метод: трансформация (например, в имена)
-    template <typename Transform>
-    auto transform(Transform f) const {
-        std::vector<std::invoke_result_t<Transform, const std::shared_ptr<T>&>> res;
-        res.reserve(items_.size());
+    template<typename TransformFunc>
+    auto transform(TransformFunc func) const {
+        std::vector<decltype(func(std::declval<std::shared_ptr<T>>()))> result;
         for (const auto& item : items_) {
-            res.push_back(f(item));
+            result.push_back(func(item));
         }
-        return res;
+        return result;
     }
 
-    // Не шаблонный метод: вывод
-    void printAll() const {
+    double getTotalPrice() const {
+        double total = 0.0;
         for (const auto& item : items_) {
-            std::cout << "  " << item->toDisplayString() << "\n";
+            total += item->getPrice();
         }
+        return total;
     }
 
-    // Вспомогательный метод: readonly-вид (аналог span)
-    auto view() const { return std::span<const std::shared_ptr<T>>(items_); }
+    const std::vector<std::shared_ptr<T>>& getAll() const {
+        return items_;
+    }
+
+    size_t size() const {
+        return items_.size();
+    }
+
+    bool empty() const {
+        return items_.empty();
+    }
 
 private:
     std::vector<std::shared_ptr<T>> items_;

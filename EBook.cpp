@@ -23,22 +23,9 @@ std::string EBook::toDisplayString() const {
 
 double EBook::getPrice() const {
     double basePrice = Product::getPrice();
-    return std::max(50.0, basePrice * 0.9);
+    return std::max(50.0, basePrice * 0.9); // Скидка 10% на цифру
 }
 
 std::unique_ptr<Product> EBook::clone() const {
     return std::make_unique<EBook>(*this);
-}
-
-EBook& EBook::operator=(const Product& other) {
-    if (this == &other) return *this;
-
-    id_ = other.id_;
-    name_ = other.name_;
-    price_ = other.price_;
-    category_ = other.category_;
-    description_ = other.description_;
-    tags_ = other.tags_;
-
-    return *this;
 }

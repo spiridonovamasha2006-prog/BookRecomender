@@ -4,7 +4,6 @@
 #include "Purchase.h"
 #include <stdexcept>
 #include <algorithm>
-#include <memory>
 
 int& Cart::getNextIdRef() {
     static int nextId = 1;
@@ -13,24 +12,18 @@ int& Cart::getNextIdRef() {
 
 Cart::Cart(std::weak_ptr<User> user)
     : user_(std::move(user)), id_(getNextIdRef()++) {
-    if (user_.expired()) {
+    if (user.expired()) {
         throw std::invalid_argument("user must not be null");
     }
 }
 
 int Cart::getId() const { return id_; }
 std::weak_ptr<User> Cart::getUser() const { return user_; }
-const std::vector<std::pair<std::shared_ptr<Product>, int>>& Cart::getItems() const {
-    return items_;
-}
+const std::vector<std::pair<std::shared_ptr<Product>, int>>& Cart::getItems() const { return items_; }
 
 void Cart::addItem(const std::shared_ptr<Product>& product, int quantity) {
-    if (!product) {
-        throw std::invalid_argument("product must not be null");
-    }
-    if (quantity <= 0) {
-        throw std::invalid_argument("quantity must be > 0");
-    }
+    if (!product) throw std::invalid_argument("product must not be null");
+    if (quantity <= 0) throw std::invalid_argument("quantity must be > 0");
     auto it = std::find_if(items_.begin(), items_.end(),
         [&product](const auto& item) { return item.first == product; });
     if (it != items_.end()) {
@@ -72,6 +65,4 @@ std::unique_ptr<Purchase> Cart::checkout() {
     return purchase;
 }
 
-Cart::operator bool() const {
-    return !items_.empty();
-}
+Cart::operator bool() const { return !items_.empty(); }
